@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechOffice Price Hunter - Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #a0aec0;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #a0aec0;
+    }
+
+    input[type="text"],
+    input[type="url"] {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .toggle-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .toggle-group:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-info {
+      flex: 1;
+    }
+
+    .toggle-label {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e2e8f0;
+    }
+
+    .toggle-desc {
+      font-size: 13px;
+      color: #a0aec0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255,255,255,0.1);
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(72, 187, 120, 0.2);
+      color: #48bb78;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #48bb78;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      margin-left: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #a0aec0;
+      font-size: 13px;
+    }
+
+    .connection-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(72, 187, 120, 0.1);
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">💎</div>
+      <h1 class="title">TechOffice Price Hunter</h1>
+      <p class="subtitle">Configure your arbitrage settings</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚙️ Extension Settings</div>
+
+      <div class="toggle-group">
+        <div class="toggle-info">
+          <div class="toggle-label">Auto-Show Panel</div>
+          <div class="toggle-desc">Automatically show arbitrage panel on product pages</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="autoShow" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-group">
+        <div class="toggle-info">
+          <div class="toggle-label">High-Contrast Mode</div>
+          <div class="toggle-desc">Increase contrast for better visibility</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="highContrast">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⭐ Subscription</div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Pro Plan</div>
+          <div style="color: #a0aec0; font-size: 14px;">All features unlocked</div>
+        </div>
+        <span class="status-badge">
+          <div class="status-dot"></div>
+          Active
+        </span>
+      </div>
+
+      <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+        <div style="font-size: 13px; color: #a0aec0; margin-bottom: 10px;">Included Features:</div>
+        <ul style="list-style: none; font-size: 14px; line-height: 2;">
+          <li>✓ Profit Score Analysis</li>
+          <li>✓ Net Profit Calculator</li>
+          <li>✓ Stock Availability Check</li>
+          <li>✓ One-Click Image Downloader</li>
+          <li>✓ Deep Link Affiliate URLs</li>
+          <li>✓ Priority Support</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 Statistics</div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+        <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+          <div style="font-size: 28px; font-weight: bold; color: #667eea;" id="statScans">0</div>
+          <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">Scans Today</div>
+        </div>
+        <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+          <div style="font-size: 28px; font-weight: bold; color: #48bb78;" id="statOpportunities">0</div>
+          <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">Opportunities</div>
+        </div>
+        <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+          <div style="font-size: 28px; font-weight: bold; color: #ecc94b;" id="statProfit">$0</div>
+          <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">Est. Profit</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+      <button class="btn btn-primary" id="saveSettings">Save Settings</button>
+      <button class="btn btn-secondary" id="resetStats">Reset Stats</button>
+    </div>
+
+    <div class="footer">
+      <p>TechOffice Price Hunter v1.0.0</p>
+      <p>Affiliate Key: ali_smart_finder_v1</p>
+    </div>
+  </div>
+
+  <script>
+    // Load settings
+    chrome.storage.sync.get(['enabled', 'autoShow', 'stats'], (result) => {
+      document.getElementById('autoShow').checked = result.autoShow !== false;
+      
+      const stats = result.stats || { todayScans: 0, opportunities: 0, totalProfit: 0 };
+      document.getElementById('statScans').textContent = stats.todayScans || 0;
+      document.getElementById('statOpportunities').textContent = stats.opportunities || 0;
+      document.getElementById('statProfit').textContent = '$' + (stats.totalProfit || 0).toFixed(2);
+    });
+
+    // Save settings
+    document.getElementById('saveSettings').addEventListener('click', () => {
+      const settings = {
+        autoShow: document.getElementById('autoShow').checked,
+        highContrast: document.getElementById('highContrast').checked
+      };
+
+      chrome.storage.sync.set(settings, () => {
+        const btn = document.getElementById('saveSettings');
+        btn.textContent = '✓ Saved!';
+        setTimeout(() => btn.textContent = 'Save Settings', 2000);
+      });
+    });
+
+    // Reset stats
+    document.getElementById('resetStats').addEventListener('click', () => {
+      chrome.storage.sync.set({
+        stats: { todayScans: 0, opportunities: 0, totalProfit: 0 }
+      }, () => {
+        document.getElementById('statScans').textContent = '0';
+        document.getElementById('statOpportunities').textContent = '0';
+        document.getElementById('statProfit').textContent = '$0';
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ali-smart-finder-api
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ALI_APP_KEY
+        sync: false
+      - key: ALI_APP_SECRET
+        sync: false

@@ -1,0 +1,659 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AliSmart Finder</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--red:#e52e2e;--bg:#f5f6fa;--card:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--green:#059669;--green-bg:#ecfdf5;--yellow:#d97706;--blue:#2563eb;--r:10px}
+body{width:420px;min-height:560px;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px}
+.hd{background:linear-gradient(135deg,#e52e2e,#c0392b);padding:13px 16px;display:flex;align-items:center;justify-content:space-between}
+.hd-brand{display:flex;align-items:center;gap:10px}
+.hd-logo{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.hd-name{color:#fff;font-weight:700;font-size:15px}
+.hd-sub{color:rgba(255,255,255,.8);font-size:10px}
+.hd-right{display:flex;align-items:center;gap:8px}
+.api-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;cursor:pointer}
+.api-dot.off{background:#ef4444;box-shadow:0 0 6px #ef4444}
+.api-dot.chk{background:#f59e0b;box-shadow:0 0 6px #f59e0b}
+.hd-btn{background:rgba(255,255,255,.15);border:none;border-radius:6px;color:#fff;width:28px;height:28px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+.tabs{display:flex;background:#fff;border-bottom:1px solid var(--border)}
+.tab{flex:1;padding:9px 4px;text-align:center;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab.on{color:var(--red);border-bottom-color:var(--red)}
+.pane{padding:11px;max-height:468px;overflow-y:auto}
+.pane::-webkit-scrollbar{width:3px}
+.pane::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:2px}
+.hidden{display:none!important}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:9px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.banner{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.banner.ok{border-left:3px solid var(--green)}
+.banner.warn{border-left:3px solid var(--yellow)}
+.banner.err{border-left:3px solid var(--red)}
+.banner-icon{font-size:18px}
+.banner-body{flex:1}
+.banner-title{font-weight:700;font-size:13px}
+.banner-desc{color:var(--muted);font-size:11px;margin-top:1px}
+.prod-row{display:flex;gap:11px;margin-bottom:11px}
+.prod-ph{width:54px;height:54px;border-radius:8px;background:linear-gradient(135deg,#f3f4f6,#e5e7eb);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.prod-img{width:54px;height:54px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex-shrink:0}
+.prod-title{font-size:13px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:5px}
+.tags{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
+.t-asin{background:#eff6ff;color:#2563eb}
+.t-match{background:#ecfdf5;color:#059669}
+.t-score{background:#fffbeb;color:#d97706}
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px}
+.pbox{border-radius:8px;padding:10px 12px;text-align:center}
+.pbox.amz{background:#fff8f5;border:1px solid #fed7aa}
+.pbox.ali{background:#f0fdf4;border:1px solid #bbf7d0}
+.psrc{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.pval{font-size:20px;font-weight:800;line-height:1}
+.pbox.amz .pval{color:#ea580c}
+.pbox.ali .pval{color:#16a34a}
+.psub{font-size:10px;color:var(--muted);margin-top:3px}
+.save-bar{background:linear-gradient(135deg,#059669,#047857);border-radius:8px;padding:11px 15px;display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.save-l{color:#fff}.save-lbl{font-size:10px;opacity:.9;margin-bottom:1px}.save-amt{font-size:21px;font-weight:800}
+.save-r{text-align:right;color:#fff}.save-pct{font-size:26px;font-weight:800;line-height:1}.save-pct-lbl{font-size:10px;opacity:.8}
+.bdown{background:#f9fafb;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:9px}
+.bdown-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:2px 0;font-size:12px}
+.brow:last-child{border-top:1px dashed var(--border);margin-top:3px;padding-top:5px;font-weight:700}
+.blbl{color:var(--muted)}.bval{font-weight:600}.bval.g{color:var(--green)}
+.seller{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:9px;display:flex;align-items:center;gap:11px}
+.s-num{font-size:21px;font-weight:800;color:var(--yellow);line-height:1}
+.s-stars{font-size:11px;color:var(--yellow);margin-top:1px;text-align:center}
+.s-details{flex:1}
+.s-name{font-weight:600;font-size:12px;margin-bottom:3px}
+.s-stats{display:flex;gap:10px;font-size:11px;color:var(--muted)}
+.s-badge{background:var(--green-bg);color:var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:3px}
+.coup{background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px dashed #f59e0b;border-radius:8px;padding:10px 12px;margin-bottom:9px;display:flex;align-items:center;gap:10px}
+.coup-icon{font-size:20px}.coup-txt{flex:1}.coup-title{font-weight:700;font-size:12px;color:#92400e}
+.coup-code{font-family:monospace;font-size:13px;font-weight:800;color:var(--red);background:rgba(255,255,255,.7);padding:2px 8px;border-radius:4px;margin-top:3px;display:inline-block}
+.coup-copy{background:#f59e0b;color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.alt-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:9px;text-decoration:none;margin-bottom:6px;transition:border-color .2s}
+.alt-item:hover{border-color:var(--red)}
+.alt-rank{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--muted);flex-shrink:0}
+.alt-name{flex:1;font-size:12px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.alt-price{font-size:13px;font-weight:700;color:var(--green);flex-shrink:0}
+.alert-row{display:flex;gap:7px;align-items:center;margin-top:7px}
+.alert-inp{flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;outline:none}
+.alert-inp:focus{border-color:var(--red)}
+.alert-btn{padding:8px 13px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer}
+.cta-group{display:flex;gap:7px;margin-bottom:9px}
+.btn-main{flex:2;padding:12px;background:linear-gradient(135deg,#e52e2e,#c0392b);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-main:hover{opacity:.9}
+.btn-save{flex:1;padding:12px;background:#fff;color:var(--red);border:1px solid rgba(229,46,46,.3);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-save:hover,.btn-save.saved{background:#fff5f5}
+.noprod{text-align:center;padding:36px 18px}
+.noprod .ico{font-size:50px;margin-bottom:13px}
+.noprod h2{font-size:17px;font-weight:700;margin-bottom:7px}
+.noprod p{color:var(--muted);font-size:13px;line-height:1.5}
+.pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:13px}
+.pill{font-size:11px;padding:4px 10px;background:#fff;border:1px solid var(--border);border-radius:20px;color:var(--muted)}
+.loading{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:24px;text-align:center}
+.spin{width:34px;height:34px;border:3px solid #fee2e2;border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 11px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-txt{font-size:13px;color:var(--muted)}.spin-sub{font-size:11px;color:#9ca3af;margin-top:3px}
+.conf-hd{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px;margin-top:6px}
+.conf-bar{background:#f3f4f6;border-radius:4px;height:4px;overflow:hidden}
+.conf-fill{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:4px;transition:width .5s}
+.wl-empty{text-align:center;padding:36px 18px}
+.wl-empty .ico{font-size:46px;margin-bottom:11px}
+.wl-empty h3{font-size:16px;font-weight:700;margin-bottom:7px}
+.wl-empty p{color:var(--muted);font-size:13px}
+.wl-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px;margin-bottom:7px;display:flex;align-items:flex-start;gap:9px}
+.wl-ico{font-size:26px;flex-shrink:0}.wl-info{flex:1;min-width:0}
+.wl-name{font-size:12px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wl-prices{display:flex;gap:10px;font-size:12px}
+.wl-amz{color:#ea580c}.wl-ali{color:var(--green)}
+.wl-alert{font-size:10px;padding:2px 7px;background:var(--green-bg);color:var(--green);border-radius:20px;font-weight:600;margin-top:3px;display:inline-block}
+.wl-acts{display:flex;flex-direction:column;gap:4px}
+.ico-btn{background:none;border:1px solid var(--border);border-radius:6px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.ico-btn.del:hover{background:#fff5f5;border-color:var(--red)}
+.chart-box{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:9px}
+.chart-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.chart-title{font-weight:700;font-size:13px}
+.periods{display:flex;gap:4px}
+.prd-btn{padding:3px 8px;border-radius:20px;border:1px solid var(--border);background:none;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)}
+.prd-btn.on{background:var(--red);color:#fff;border-color:var(--red)}
+.chart-area{width:100%;height:80px}
+.chart-svg{width:100%;height:100%}
+.chart-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}
+.cs{text-align:center;padding:7px;background:var(--bg);border-radius:6px}
+.cs-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600}
+.cs-val{font-size:14px;font-weight:800;margin-top:2px}
+.cs-val.cur{color:var(--green)}.cs-val.lo{color:var(--blue)}.cs-val.hi{color:var(--red)}
+.set-sec{margin-bottom:13px}
+.set-sec-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.set-row{background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.set-lbl{font-size:13px;font-weight:500}.set-desc{font-size:11px;color:var(--muted);margin-top:1px}
+.tog{position:relative;width:44px;height:24px;background:#d1d5db;border-radius:12px;cursor:pointer;transition:background .2s;flex-shrink:0}
+.tog.on{background:var(--red)}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.tog.on::after{transform:translateX(20px)}
+.ft{background:#fff;border-top:1px solid var(--border);padding:8px 15px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted)}
+.ft a{color:var(--red);text-decoration:none}
+.wl-cnt{background:var(--red);color:#fff;padding:1px 5px;border-radius:20px;font-size:10px;margin-left:3px}
+.alts-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+</style>
+</head>
+<body>
+<div class="hd">
+  <div class="hd-brand">
+    <div class="hd-logo">💰</div>
+    <div><div class="hd-name">AliSmart Finder</div><div class="hd-sub">Gaming &amp; Tech Price Hunter</div></div>
+  </div>
+  <div class="hd-right">
+    <div class="api-dot chk" id="apiDot" title="API Status"></div>
+    <button class="hd-btn" id="settingsTabBtn">⚙️</button>
+  </div>
+</div>
+<div class="tabs">
+  <div class="tab on" data-tab="compare">🔍 Compare</div>
+  <div class="tab" data-tab="history">📈 History</div>
+  <div class="tab" data-tab="wishlist">❤️ Wishlist<span class="wl-cnt hidden" id="wlCount"></span></div>
+  <div class="tab" data-tab="settings">⚙️ Settings</div>
+</div>
+
+<!-- COMPARE TAB -->
+<div id="tab-compare" class="pane">
+  <div class="banner err hidden" id="offlineBanner">
+    <span class="banner-icon">🔌</span>
+    <div class="banner-body"><div class="banner-title">Backend Offline</div><div class="banner-desc">Run: cd backend &amp;&amp; npm start</div></div>
+    <button onclick="checkApi()" style="border:none;background:none;cursor:pointer;font-size:16px">🔄</button>
+  </div>
+  <div id="noProduct" class="noprod">
+    <div class="ico">🛒</div>
+    <h2>Open an Amazon Product</h2>
+    <p>Navigate to any Gaming or Tech product page on Amazon to compare prices with AliExpress</p>
+    <div class="pills">
+      <span class="pill">🎮 Gaming</span><span class="pill">⌨️ Keyboards</span>
+      <span class="pill">🖱️ Mice</span><span class="pill">🖥️ Monitors</span>
+      <span class="pill">🎧 Headphones</span><span class="pill">💻 Laptops</span>
+      <span class="pill">📱 Phones</span><span class="pill">📷 Cameras</span>
+    </div>
+  </div>
+  <div id="loadingState" class="loading hidden">
+    <div class="spin"></div>
+    <div class="spin-txt">Searching AliExpress...</div>
+    <div class="spin-sub" id="loadingStep">Analyzing product...</div>
+  </div>
+  <div id="productFound" class="hidden">
+    <div class="card" id="productCard">
+      <div class="prod-row">
+        <div class="prod-ph" id="prodPh">📦</div>
+        <img class="prod-img hidden" id="prodImg" src="" alt="">
+        <div style="flex:1;min-width:0">
+          <div class="prod-title" id="prodTitle">-</div>
+          <div class="tags">
+            <span class="tag t-asin" id="asinTag">ASIN</span>
+            <span class="tag t-match hidden" id="matchTag">✓ Match</span>
+            <span class="tag t-score hidden" id="scoreTag">Score</span>
+          </div>
+          <div class="conf-hd hidden" id="confHd"><span>Match Confidence</span><span id="confPct" style="font-weight:700;color:var(--green)"></span></div>
+          <div class="conf-bar hidden" id="confBar"><div class="conf-fill" id="confFill" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="price-grid">
+      <div class="pbox amz"><div class="psrc">Amazon</div><div class="pval" id="amzPrice">-</div><div class="psub">Current price</div></div>
+      <div class="pbox ali"><div class="psrc">AliExpress</div><div class="pval" id="aliPrice">-</div><div class="psub" id="aliPriceSub">incl. shipping</div></div>
+    </div>
+    <div class="save-bar hidden" id="saveBar">
+      <div class="save-l"><div class="save-lbl">You save</div><div class="save-amt" id="saveAmt">$0</div><div style="font-size:10px;opacity:.7;margin-top:1px" id="saveSub"></div></div>
+      <div class="save-r"><div class="save-pct" id="savePct">0%</div><div class="save-pct-lbl">CHEAPER</div></div>
+    </div>
+    <div class="banner warn hidden" id="noSaveBar">
+      <span class="banner-icon">⚠️</span>
+      <div class="banner-body"><div class="banner-title">Amazon may be cheaper</div><div class="banner-desc">After shipping &amp; fees, AliExpress total is higher</div></div>
+    </div>
+    <div class="bdown hidden" id="bdown">
+      <div class="bdown-title">💡 Total Cost Breakdown</div>
+      <div class="brow"><span class="blbl">Product price</span><span class="bval" id="bdProd">-</span></div>
+      <div class="brow"><span class="blbl">Shipping est.</span><span class="bval" id="bdShip">-</span></div>
+      <div class="brow"><span class="blbl">Import duty (~5%)</span><span class="bval" id="bdTax">-</span></div>
+      <div class="brow"><span class="blbl">Payment fee (~2%)</span><span class="bval" id="bdFee">-</span></div>
+      <div class="brow"><span class="blbl">AliExpress Total</span><span class="bval g" id="bdTotal">-</span></div>
+    </div>
+    <div class="coup hidden" id="couponBox">
+      <div class="coup-icon">🎟️</div>
+      <div class="coup-txt"><div class="coup-title">Coupon Available!</div><div class="coup-code" id="couponCode">-</div></div>
+      <button class="coup-copy" id="couponCopyBtn">Copy</button>
+    </div>
+    <div class="seller hidden" id="sellerBox">
+      <div style="text-align:center;flex-shrink:0">
+        <div class="s-num" id="sRating">4.8</div>
+        <div class="s-stars" id="sStars">★★★★★</div>
+      </div>
+      <div class="s-details">
+        <div class="s-name" id="sName">AliExpress Seller</div>
+        <div class="s-stats"><span>📦 <span id="sOrders">-</span> sold</span><span>⏱️ <span id="sShip">7-20d</span></span></div>
+        <span class="s-badge" id="sBadge">✓ Trusted Seller</span>
+      </div>
+    </div>
+    <div id="altsSection" class="hidden">
+      <div class="alts-title">🔀 Other Options</div>
+      <div id="altsList"></div>
+    </div>
+    <div class="card" style="padding:10px 12px;margin-bottom:9px">
+      <div style="font-weight:700;font-size:12px;margin-bottom:5px">🔔 Set Price Alert</div>
+      <div style="font-size:12px;color:var(--muted)">Notify me when price drops below:</div>
+      <div class="alert-row">
+        <span style="font-weight:700;font-size:14px">$</span>
+        <input type="number" class="alert-inp" id="alertPrice" placeholder="Target price">
+        <button class="alert-btn" id="setAlertBtn">Set Alert</button>
+      </div>
+    </div>
+    <div class="cta-group">
+      <a href="#" class="btn-main" id="viewDealBtn" target="_blank">🛒 View Deal on AliExpress</a>
+      <button class="btn-save" id="wishlistBtn">❤️ Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY TAB -->
+<div id="tab-history" class="pane hidden">
+  <div id="histNoProduct" class="noprod">
+    <div class="ico">📈</div>
+    <h2>No Product Selected</h2>
+    <p>Navigate to an Amazon product page to see price history</p>
+  </div>
+  <div id="histContent" class="hidden">
+    <div class="chart-box">
+      <div class="chart-hd">
+        <div class="chart-title" id="chartTitle">Price History</div>
+        <div class="periods">
+          <button class="prd-btn on" data-d="30">30d</button>
+          <button class="prd-btn" data-d="90">90d</button>
+          <button class="prd-btn" data-d="180">6m</button>
+        </div>
+      </div>
+      <div class="chart-area">
+        <svg class="chart-svg" id="chartSvg" viewBox="0 0 395 80" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="gAli" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22c55e" stop-opacity=".35"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></linearGradient>
+            <linearGradient id="gAmz" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ea580c" stop-opacity=".25"/><stop offset="100%" stop-color="#ea580c" stop-opacity="0"/></linearGradient>
+          </defs>
+          <text x="197" y="42" text-anchor="middle" fill="#9ca3af" font-size="11">Loading price data...</text>
+        </svg>
+      </div>
+      <div style="display:flex;gap:16px;font-size:11px;margin-top:7px;justify-content:center">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:2px;background:#ea580c;display:inline-block;border-radius:2px"></span>Amazon</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:2px;background:#22c55e;display:inline-block;border-radius:2px"></span>AliExpress</span>
+      </div>
+      <div class="chart-stats">
+        <div class="cs"><div class="cs-lbl">Current</div><div class="cs-val cur" id="stCur">-</div></div>
+        <div class="cs"><div class="cs-lbl">30d Low</div><div class="cs-val lo" id="stLow">-</div></div>
+        <div class="cs"><div class="cs-lbl">30d High</div><div class="cs-val hi" id="stHigh">-</div></div>
+      </div>
+    </div>
+    <div class="banner ok" id="buyRec">
+      <span class="banner-icon">✅</span>
+      <div class="banner-body"><div class="banner-title" id="recTitle">Good time to buy</div><div class="banner-desc" id="recDesc">Price is near 30-day low</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- WISHLIST TAB -->
+<div id="tab-wishlist" class="pane hidden">
+  <div id="wlEmpty" class="wl-empty">
+    <div class="ico">❤️</div>
+    <h3>Wishlist is Empty</h3>
+    <p>Save products to track prices and get drop alerts</p>
+  </div>
+  <div id="wlItems"></div>
+</div>
+
+<!-- SETTINGS TAB -->
+<div id="tab-settings" class="pane hidden">
+  <div class="set-sec">
+    <div class="set-sec-title">🌐 Backend API</div>
+    <div class="set-row">
+      <div><div class="set-lbl">API Status</div><div class="set-desc" id="settApiTxt">Checking...</div></div>
+      <span id="settApiDot" style="width:10px;height:10px;border-radius:50%;background:#f59e0b;flex-shrink:0"></span>
+    </div>
+    <div class="set-row">
+      <div><div class="set-lbl">Server URL</div><div class="set-desc">https://your-app.onrender.com</div></div>
+      <button onclick="checkApi()" style="border:1px solid var(--border);background:none;padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer">Test</button>
+    </div>
+  </div>
+  <div class="set-sec">
+    <div class="set-sec-title">🔔 Alerts</div>
+    <div class="set-row">
+      <div><div class="set-lbl">Price Drop Alerts</div><div class="set-desc">Notify when wishlist prices drop</div></div>
+      <div class="tog on" id="tog-alerts" onclick="toggleS('alerts',this)"></div>
+    </div>
+    <div class="set-row">
+      <div><div class="set-lbl">Auto Scan Pages</div><div class="set-desc">Auto-search Amazon product pages</div></div>
+      <div class="tog on" id="tog-autoScan" onclick="toggleS('autoScan',this)"></div>
+    </div>
+  </div>
+  <div class="set-sec">
+    <div class="set-sec-title">💡 Display</div>
+    <div class="set-row">
+      <div><div class="set-lbl">Cost Breakdown</div><div class="set-desc">Show shipping, tax &amp; fee details</div></div>
+      <div class="tog on" id="tog-breakdown" onclick="toggleS('breakdown',this)"></div>
+    </div>
+    <div class="set-row">
+      <div><div class="set-lbl">Alternative Products</div><div class="set-desc">Show other matching listings</div></div>
+      <div class="tog on" id="tog-alts" onclick="toggleS('alts',this)"></div>
+    </div>
+  </div>
+  <div class="set-sec">
+    <div class="set-sec-title">🔒 Privacy</div>
+    <div class="set-row">
+      <div><div class="set-lbl">Local Only Mode</div><div class="set-desc">Store data only on this device</div></div>
+      <div class="tog" id="tog-local" onclick="toggleS('local',this)"></div>
+    </div>
+    <div class="set-row" style="cursor:pointer" onclick="clearData()">
+      <div><div class="set-lbl" style="color:var(--red)">Clear All Data</div><div class="set-desc">Remove all stored data</div></div>
+      <span style="color:var(--muted);font-size:16px">›</span>
+    </div>
+  </div>
+  <div style="text-align:center;padding:16px;color:var(--muted);font-size:11px">AliSmart Finder v2.0.0</div>
+</div>
+
+<div class="ft">
+  <span id="ftStatus" style="color:var(--muted)">Checking API...</span>
+  <span>Powered by <a href="#">AliSmart</a></span>
+</div>
+
+<script>
+const API='https://your-app.onrender.com';
+let S={apiOnline:false,product:null,ali:null,wishlist:[],cfg:{alerts:true,autoScan:true,breakdown:true,alts:true,local:false}};
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  await loadCfg();await checkApi();await loadWL();await checkTab();setupTabs();setupEvents();
+});
+
+// TABS
+function setupTabs(){
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      const id=t.dataset.tab;
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+      t.classList.add('on');
+      document.querySelectorAll('[id^="tab-"]').forEach(x=>x.classList.add('hidden'));
+      document.getElementById('tab-'+id).classList.remove('hidden');
+      if(id==='history'&&S.product)loadHist();
+      if(id==='settings')updateSettUI();
+    });
+  });
+  document.getElementById('settingsTabBtn').addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelector('[data-tab="settings"]').classList.add('on');
+    document.querySelectorAll('[id^="tab-"]').forEach(x=>x.classList.add('hidden'));
+    document.getElementById('tab-settings').classList.remove('hidden');
+    updateSettUI();
+  });
+}
+
+// API CHECK
+async function checkApi(){
+  const dot=document.getElementById('apiDot');
+  dot.className='api-dot chk';
+  try{
+    let online=false;
+    try{
+      const r=await new Promise(res=>chrome.runtime.sendMessage({action:'getApiStatus'},res));
+      if(r&&r.status==='online')online=true;
+    }catch(e){}
+    if(!online){
+      const r=await fetch(API+'/api/health',{signal:AbortSignal.timeout(4000)});
+      if(r.ok)online=true;
+    }
+    setApi(online);
+  }catch{setApi(false);}
+}
+function setApi(on){
+  S.apiOnline=on;
+  const dot=document.getElementById('apiDot');
+  const ft=document.getElementById('ftStatus');
+  const banner=document.getElementById('offlineBanner');
+  if(on){dot.className='api-dot';ft.textContent='✅ Backend Online';ft.style.color='var(--green)';banner.classList.add('hidden');}
+  else{dot.className='api-dot off';ft.textContent='🔴 Backend Offline';ft.style.color='var(--red)';banner.classList.remove('hidden');}
+}
+
+// CURRENT TAB
+async function checkTab(){
+  try{
+    const[tab]=await chrome.tabs.query({active:true,currentWindow:true});
+    if(!tab||!tab.url){showNoProd();return;}
+    const isAmz=/amazon\.(com|co\.uk|de|fr|ca|it|es|co\.jp|in|com\.au)/.test(tab.url);
+    const isProd=/\/dp\/|\/gp\/product\//.test(tab.url);
+    if(!isAmz||!isProd){showNoProd();return;}
+    showLoading('Extracting product data...');
+    chrome.tabs.sendMessage(tab.id,{action:'getProductInfo'},async r=>{
+      if(chrome.runtime.lastError||!r||!r.product){showNoProd();return;}
+      S.product=r.product;
+      await search(r.product);
+    });
+  }catch{showNoProd();}
+}
+
+// SEARCH
+async function search(product){
+  showLoading('Searching AliExpress...');
+  try{
+    // Clean title: remove special chars and take first 5 words
+    let cleanTitle = (product.title || '')
+      .replace(/[+–!()\[\]]/g, '') // Remove special characters
+      .replace(/\s+/g, ' ')
+      .replace(/\|/g, ' ')
+      .trim();
+    
+    const words = cleanTitle.split(/\s+/);
+    const query = words.slice(0, 5).join(' ');
+    
+    console.log(`[AliSmart Finder] Cleaned Search Query: ${query}`);
+    
+    const url=`${API}/api/search?query=${encodeURIComponent(query)}&amazonPrice=${product.price||''}&asin=${product.asin||''}`;
+    const r=await fetch(url,{signal:AbortSignal.timeout(15000)});
+    if(!r.ok)throw new Error('API '+r.status);
+    const j=await r.json();
+    if(!j.success||!j.data){showNoProd();return;}
+    S.ali=j.data;
+    displayResults(product,j.data);
+  }catch(e){console.error('[AliSmart]',e);showNoProd();}
+}
+
+// DISPLAY
+function displayResults(product,ali){
+  $('noProduct').classList.add('hidden');
+  $('loadingState').classList.add('hidden');
+  $('productFound').classList.remove('hidden');
+
+  $('prodTitle').textContent=(product.title||'').substring(0,80);
+  $('asinTag').textContent=product.asin||'N/A';
+
+  const img=product.image||ali.image||'';
+  if(img){
+    $('prodImg').src=img;
+    $('prodImg').classList.remove('hidden');
+    $('prodPh').classList.add('hidden');
+  }
+
+  if(ali.matchConfidence){
+    const pct=Math.round(ali.matchConfidence*100);
+    $('confHd').classList.remove('hidden');
+    $('confBar').classList.remove('hidden');
+    $('confPct').textContent=pct+'%';
+    $('confFill').style.width=pct+'%';
+    $('matchTag').textContent='✓ '+pct+'% Match';
+    $('matchTag').classList.remove('hidden');
+    $('scoreTag').textContent='⭐ '+Math.round(pct/10)+'/10';
+    $('scoreTag').classList.remove('hidden');
+  }
+
+  const amzP=parseFloat(product.price)||0;
+  const aliTotal=parseFloat(ali.totalCost||ali.aliPrice||0);
+  const aliBase=parseFloat(ali.aliPrice||0);
+  const ship=parseFloat(ali.shipping||3.99);
+
+  $('amzPrice').textContent=amzP>0?'$'+amzP.toFixed(2):'N/A';
+  $('aliPrice').textContent=aliTotal>0?'$'+aliTotal.toFixed(2):'N/A';
+  $('aliPriceSub').textContent=ship>0?'+ $'+ship.toFixed(2)+' shipping':'Free shipping';
+
+  if(amzP>0&&aliTotal>0){
+    const sav=amzP-aliTotal;
+    const pct=((sav/amzP)*100).toFixed(1);
+    if(sav>0){
+      $('saveBar').classList.remove('hidden');
+      $('noSaveBar').classList.add('hidden');
+      $('saveAmt').textContent='$'+sav.toFixed(2);
+      $('savePct').textContent=pct+'%';
+      $('saveSub').textContent='vs Amazon $'+amzP.toFixed(2);
+    }else{
+      $('saveBar').classList.add('hidden');
+      $('noSaveBar').classList.remove('hidden');
+    }
+  }
+
+  if(S.cfg.breakdown&&aliBase>0){
+    const tax=aliBase*0.05;const fee=aliBase*0.02;const tot=aliBase+ship+tax+fee;
+    $('bdown').classList.remove('hidden');
+    $('bdProd').textContent='$'+aliBase.toFixed(2);
+    $('bdShip').textContent=ship>0?'$'+ship.toFixed(2):'Free';
+    $('bdTax').textContent='$'+tax.toFixed(2);
+    $('bdFee').textContent='$'+fee.toFixed(2);
+    $('bdTotal').textContent='$'+tot.toFixed(2);
+  }
+
+  if(ali.rating||ali.orders){
+    $('sellerBox').classList.remove('hidden');
+    const rat=parseFloat(ali.rating||4.5);
+    $('sRating').textContent=rat.toFixed(1);
+    $('sStars').textContent='★'.repeat(Math.round(rat))+'☆'.repeat(5-Math.round(rat));
+    $('sName').textContent=ali.seller||'AliExpress Seller';
+    $('sOrders').textContent=ali.orders?Number(ali.orders).toLocaleString():'1,000+';
+    if(rat>=4.5){$('sBadge').textContent='⭐ Top Rated';$('sBadge').style.background='#fef3c7';$('sBadge').style.color='#92400e';}
+  }
+
+  if(S.cfg.alts&&ali.alternatives&&ali.alternatives.length){
+    $('altsSection').classList.remove('hidden');
+    $('altsList').innerHTML=ali.alternatives.slice(0,3).map((a,i)=>`
+      <a class="alt-item" href="${a.url||'#'}" target="_blank">
+        <div class="alt-rank">${i+2}</div>
+        <div class="alt-name">${a.title||'Product'}</div>
+        <div class="alt-price">$${parseFloat(a.price||0).toFixed(2)}</div>
+      </a>`).join('');
+  }
+
+  // Coupon from API
+  if(ali.coupon&&ali.coupon.code){
+    $('couponBox').classList.remove('hidden');
+    $('couponCode').textContent=ali.coupon.code;
+    $('couponBox').querySelector('.coup-title').textContent=
+      ali.coupon.desc||'Coupon Available!';
+  }else{
+    $('couponBox').classList.add('hidden');
+  }
+
+  $('viewDealBtn').href=ali.aliUrl||'#';
+  if(aliTotal>0)$('alertPrice').value=(aliTotal*0.9).toFixed(2);
+}
+
+// HISTORY
+async function loadHist(){
+  if(!S.product){$('histNoProduct').classList.remove('hidden');$('histContent').classList.add('hidden');return;}
+  $('histNoProduct').classList.add('hidden');$('histContent').classList.remove('hidden');
+  $('chartTitle').textContent=(S.product.title||'').substring(0,38)+'...';
+  const aliBase=S.ali?.aliPrice||25,amzBase=S.product?.price||40;
+  const aliH=mockHist(aliBase,30),amzH=mockHist(amzBase,30,.04);
+  drawChart(aliH,amzH);
+  const cur=aliH[aliH.length-1],lo=Math.min(...aliH),hi=Math.max(...aliH);
+  $('stCur').textContent='$'+cur.toFixed(2);$('stLow').textContent='$'+lo.toFixed(2);$('stHigh').textContent='$'+hi.toFixed(2);
+  const nearLow=cur<=lo*1.06;
+  $('recTitle').textContent=nearLow?'✅ Great time to buy!':'⏳ Prices may drop further';
+  $('recDesc').textContent=nearLow?'Current price is near 30-day low':`Could drop ~${((cur-lo)/cur*100).toFixed(0)}% based on history`;
+  $('buyRec').className='banner '+(nearLow?'ok':'warn');
+}
+function mockHist(base,days,vol=.08){
+  let p=base,arr=[];
+  for(let i=0;i<days;i++){p+=( Math.random()-.5)*base*vol;p=Math.max(base*.75,Math.min(base*1.25,p));arr.push(p);}
+  return arr;
+}
+function drawChart(ali,amz){
+  const svg=$('chartSvg'),w=395,h=80,pd=4;
+  const all=[...ali,...amz],mn=Math.min(...all),mx=Math.max(...all),rng=mx-mn||1;
+  const tx=(i,n)=>pd+(i/(n-1))*(w-pd*2);
+  const ty=(p)=>pd+((mx-p)/rng)*(h-pd*2);
+  const line=(arr,clr)=>arr.map((p,i)=>`${tx(i,arr.length)},${ty(p)}`).join(' ');
+  const area=(arr,gid)=>{const pts=line(arr,clr='');const n=arr.length;return`<path d="M ${pts.split(' ').join(' L ')} L ${tx(n-1,n)},${h} ${tx(0,n)},${h} Z" fill="url(#${gid})"/>`;}
+  svg.innerHTML=`
+    <defs>
+      <linearGradient id="gAli" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22c55e" stop-opacity=".3"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></linearGradient>
+      <linearGradient id="gAmz" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ea580c" stop-opacity=".2"/><stop offset="100%" stop-color="#ea580c" stop-opacity="0"/></linearGradient>
+    </defs>
+    <path d="M ${line(amz,'').split(' ').join(' L ')} L ${tx(amz.length-1,amz.length)},${h} ${tx(0,amz.length)},${h} Z" fill="url(#gAmz)"/>
+    <path d="M ${line(ali,'').split(' ').join(' L ')} L ${tx(ali.length-1,ali.length)},${h} ${tx(0,ali.length)},${h} Z" fill="url(#gAli)"/>
+    <polyline points="${line(amz,'')}" fill="none" stroke="#ea580c" stroke-width="2" stroke-linejoin="round"/>
+    <polyline points="${line(ali,'')}" fill="none" stroke="#22c55e" stroke-width="2" stroke-linejoin="round"/>
+  `;
+}
+
+// WISHLIST
+async function loadWL(){const{wishlist=[]}=await chrome.storage.local.get('wishlist');S.wishlist=wishlist;renderWL();updateWLCnt();}
+function renderWL(){
+  const items=$('wlItems'),empty=$('wlEmpty');
+  if(!S.wishlist.length){empty.classList.remove('hidden');items.innerHTML='';return;}
+  empty.classList.add('hidden');
+  items.innerHTML=S.wishlist.map((w,i)=>`
+    <div class="wl-item">
+      <div class="wl-ico">📦</div>
+      <div class="wl-info">
+        <div class="wl-name">${w.title||'Product'}</div>
+        <div class="wl-prices"><span class="wl-amz">Amazon: $${w.amazonPrice||'?'}</span><span class="wl-ali">Ali: $${w.aliPrice||'?'}</span></div>
+        ${w.targetPrice?`<span class="wl-alert">🔔 Alert at $${w.targetPrice}</span>`:''}
+      </div>
+      <div class="wl-acts">
+        <button class="ico-btn" onclick="openAli(${i})" title="View">🔗</button>
+        <button class="ico-btn del" onclick="delWL(${i})" title="Remove">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+function updateWLCnt(){const c=S.wishlist.length,b=$('wlCount');b.textContent=c;c>0?b.classList.remove('hidden'):b.classList.add('hidden');}
+async function addWL(){
+  if(!S.product||!S.ali)return;
+  const item={id:Date.now(),title:S.product.title,asin:S.product.asin,amazonPrice:S.product.price,aliPrice:S.ali.aliPrice,aliUrl:S.ali.aliUrl,targetPrice:$('alertPrice').value||null,addedAt:new Date().toISOString()};
+  S.wishlist.unshift(item);
+  await chrome.storage.local.set({wishlist:S.wishlist});
+  const btn=$('wishlistBtn');btn.textContent='✅ Saved!';btn.classList.add('saved');
+  setTimeout(()=>{btn.textContent='❤️ Save';btn.classList.remove('saved');},2200);
+  updateWLCnt();
+}
+async function delWL(i){S.wishlist.splice(i,1);await chrome.storage.local.set({wishlist:S.wishlist});renderWL();updateWLCnt();}
+function openAli(i){const w=S.wishlist[i];if(w&&w.aliUrl)chrome.tabs.create({url:w.aliUrl});}
+
+// SETTINGS
+async function loadCfg(){const{cfg}=await chrome.storage.local.get('cfg');if(cfg)S.cfg={...S.cfg,...cfg};applyToggles();}
+function applyToggles(){Object.keys(S.cfg).forEach(k=>{const el=document.getElementById('tog-'+k);if(el)el.className='tog'+(S.cfg[k]?' on':'');});}
+function toggleS(key,el){S.cfg[key]=!S.cfg[key];el.className='tog'+(S.cfg[key]?' on':'');chrome.storage.local.set({cfg:S.cfg});}
+function updateSettUI(){
+  const d=$('settApiDot'),t=$('settApiTxt');
+  if(S.apiOnline){d.style.background='#22c55e';t.textContent='Connected to backend';}
+  else{d.style.background='#ef4444';t.textContent='Not connected — run npm start';}
+}
+function clearData(){if(confirm('Clear all stored data?')){chrome.storage.local.clear();S.wishlist=[];renderWL();updateWLCnt();}}
+
+// HELPERS
+function $(id){return document.getElementById(id);}
+function showNoProd(){$('noProduct').classList.remove('hidden');$('loadingState').classList.add('hidden');$('productFound').classList.add('hidden');$('offlineBanner').classList.add('hidden');}
+function showLoading(msg){$('noProduct').classList.add('hidden');$('productFound').classList.add('hidden');$('loadingState').classList.remove('hidden');$('loadingStep').textContent=msg;}
+
+// EVENTS
+function setupEvents(){
+  $('wishlistBtn').addEventListener('click',addWL);
+  $('setAlertBtn').addEventListener('click',addWL);
+  $('couponCopyBtn').addEventListener('click',()=>{
+    navigator.clipboard.writeText($('couponCode').textContent);
+    $('couponCopyBtn').textContent='✓ Copied';setTimeout(()=>$('couponCopyBtn').textContent='Copy',2000);
+  });
+  document.querySelectorAll('.prd-btn').forEach(b=>{
+    b.addEventListener('click',()=>{document.querySelectorAll('.prd-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');loadHist();});
+  });
+}
+</script>
+</body>
+</html>

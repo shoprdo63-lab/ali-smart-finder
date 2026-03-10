@@ -1,0 +1,21 @@
+{
+  "name": "wc-price-hunter-backend",
+  "version": "2.0.0",
+  "description": "World-class price intelligence backend with advanced product matching",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "node-cache": "^5.1.2",
+    "axios": "^1.6.2"
+  },
+  "engines": {
+    "node": ">= 18.14.0"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "manifest_version": 3,
+  "name": "WC Price Hunter",
+  "description": "World-class price intelligence tool - Find better deals across Amazon and AliExpress",
+  "version": "2.0.0",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.amazon.com/*",
+    "https://www.amazon.co.uk/*",
+    "https://www.amazon.de/*",
+    "https://www.amazon.ca/*",
+    "https://www.amazon.fr/*",
+    "https://www.amazon.it/*",
+    "https://www.amazon.es/*",
+    "https://www.aliexpress.com/*",
+    "https://*.aliexpress.com/*",
+    "http://localhost:3000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.amazon.com/*/dp/*",
+        "https://www.amazon.com/dp/*",
+        "https://www.amazon.co.uk/*/dp/*",
+        "https://www.amazon.co.uk/dp/*",
+        "https://www.amazon.de/*/dp/*",
+        "https://www.amazon.de/dp/*",
+        "https://www.amazon.ca/*/dp/*",
+        "https://www.amazon.ca/dp/*",
+        "https://www.amazon.fr/*/dp/*",
+        "https://www.amazon.fr/dp/*",
+        "https://www.amazon.it/*/dp/*",
+        "https://www.amazon.it/dp/*",
+        "https://www.amazon.es/*/dp/*",
+        "https://www.amazon.es/dp/*"
+      ],
+      "js": ["lib/api.js", "content/amazon.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.aliexpress.com/item/*",
+        "https://*.aliexpress.com/item/*"
+      ],
+      "js": ["lib/api.js", "content/aliexpress.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["ui/*"],
+      "matches": ["https://*/*"]
+    }
+  ]
+}

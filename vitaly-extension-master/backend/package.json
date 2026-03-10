@@ -1,0 +1,22 @@
+{
+  "name": "aliexpress-affiliate-backend",
+  "version": "1.0.0",
+  "description": "Production backend for AliExpress affiliate Chrome extension",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "node-cache": "^5.1.2",
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "engines": {
+    "node": ">= 18.14.0"
+  }
+}
